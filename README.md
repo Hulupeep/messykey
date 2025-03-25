@@ -1,5 +1,4 @@
 
-```markdown
 # 🔐 MessyKey — Human Rhythm as Security
 
 MessyKey adds a new layer of password security by checking **how** you type, not just **what** you type.
