@@ -94,9 +94,4 @@ Pull requests, issues, ideas, weird experiments — all welcome.
 ## 📄 License
 
 MIT — open to remix, reuse, and reimagine. Just don't make it evil.
-
-```
-
----
-
-Let me know if you want me to set this up as a full repo with folders, demo link, and GitHub metadata!
+ 
