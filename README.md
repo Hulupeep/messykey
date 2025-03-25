@@ -200,6 +200,8 @@ Contributions welcome!
 3.  Make your changes and commit.
 4.  Submit a pull request.
 
+To understand more about why I created this protocol, see [about.md](about.md)
+
 ## 📝 License
 
 MessyKey is released under the [MIT License](LICENSE).
