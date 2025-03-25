@@ -156,7 +156,58 @@ This technique allows for granular authorization within an application by requir
 * **Mechanism:** The application manages multiple `TypingProfile`s or verification criteria per user. During verification (`verify` operation), the application supplies the appropriate `TypingProfile` based on the context of the action being authorized.
 * **Benefit:** Enables behavioral step-up authentication within a session, providing enhanced security for critical operations without necessarily requiring distinct authentication factors for each step.
 
-## 7. Security Considerations
+  ## 7. Implementation Considerations
+
+While the MessyKey protocol defines the core data structures, operations, and principles, implementers must address several practical considerations to build a robust and usable system. This section outlines key areas requiring attention during implementation.
+
+* **7.1. Profile Storage (Client-Side):**
+    * The `TypingProfile` (biometric template) must be stored securely on the client device. Implementers should choose appropriate browser storage mechanisms (e.g., `IndexedDB` is generally preferred over `localStorage` for better security and structure) and consider potential threats like Cross-Site Scripting (XSS) or physical access to the device.
+    * The raw password or secret phrase used during enrollment **must not** be stored alongside the profile.
+
+* **7.2. Multi-Device Strategy and Profile Management:**
+    * The protocol operates on the profile data available locally. Handling users accessing the service from multiple devices requires a deliberate strategy, as the protocol itself does not dictate profile synchronization.
+    * **Challenge:** Typing dynamics vary significantly across different hardware (keyboards). A profile trained on one device may not be suitable for verification on another without potentially insecurely high tolerance levels.
+    * **Possible Strategies (Implementation Choice):**
+        * *Re-enrollment Per Device:* Simplest, purest local-first approach, best for capturing device-specific dynamics but impacts UX.
+        * *Manual Export/Import:* User-controlled transfer of encrypted profiles; requires robust encryption and careful UX.
+        * *Peer-to-Peer Sync:* Enables local network transfer but has limited applicability and implementation complexity.
+        * *Server-Side Encrypted Storage:* Offers seamless UX but compromises strict local-first principles and requires robust client-side encryption keyed via user credentials.
+    * Implementations choosing syncing methods must consider how to manage potentially multiple device-specific profiles or address the accuracy implications of using a single profile across varying hardware.
+
+* **7.3. Enrollment Process and User Experience (UX):**
+    * A sufficient number of enrollment samples (e.g., 5-10 recommended) is crucial for generating a reliable `TypingProfile`.
+    * Consider providing feedback to the user during enrollment regarding the consistency of their typing pattern samples.
+    * The UX should guide the user clearly through the enrollment process, especially if training advanced patterns like Katas (Section 6.1).
+
+* **7.4. Verification Tolerance and Thresholds:**
+    * Setting the appropriate tolerance for timing deviations during verification (`verify` operation) is critical. This involves balancing:
+        * **Security (False Accept Rate - FAR):** A tolerance set too high may allow attackers mimicking the user's approximate rhythm to succeed.
+        * **Usability (False Reject Rate - FRR):** A tolerance set too low may frequently reject the legitimate user due to natural variations in their typing.
+    * Implementations should consider using adaptive tolerances based on the standard deviation calculated during training (as stored in `AveragedTypingProfile`) rather than fixed global values. Thresholds might need tuning based on testing and application context.
+
+* **7.5. Fallback Authentication Mechanism:**
+    * As mandated in Security Considerations, a secure and reliable alternative authentication method **must** be available for users who cannot enroll or verify using MessyKey (e.g., due to inconsistent typing, disability, device issues, or forgotten Katas).
+
+* **7.6. Error Handling and User Feedback:**
+    * Provide clear feedback to the user upon verification failure. However, avoid providing *too much specific* information (e.g., "timing mismatch on key 3") that could inadvertently aid an attacker probing the system. Generic messages ("Authentication failed") are often preferred from a security perspective.
+    * Handle potential errors during profile storage, retrieval, or processing gracefully.
+
+* **7.7. Integration with Application Authentication Flow:**
+    * The client-side application logic must correctly interpret the `VerificationResult` from `messyKey.verify()`.
+    * When communicating with a back-end, only the boolean outcome (`messyKeyVerified: true/false`) or a derived status should be sent, **never** the raw `TypingPattern` or `TypingProfile`. The back-end uses this flag as an *additional* check alongside primary credential verification.
+
+* **7.8. Implementing Advanced Patterns (Section 6):**
+    * Leveraging Typing Katas or Context-Specific Sequences requires more sophisticated logic within the `train` and `verify` implementations than the basic statistical averaging model might imply.
+    * Consider how Katas are defined and trained by the user, and how multiple profiles or verification criteria are managed and invoked for context-specific checks.
+
+* **7.9. Monotonic Clock Source:**
+    * Implementations must use a monotonic clock source (e.g., `performance.now()` in JavaScript) for reliable `timestamp` generation in `KeystrokeEvent`s, avoiding issues caused by system clock adjustments.
+
+* **7.10. Input Field Interactions:**
+    * Consider interactions with browser password managers and accessibility tools. Ensure the event listeners capture the necessary data without interfering with these functions.
+    * Decide whether to attempt blocking paste events into the monitored field (improves security against simple paste attacks but harms usability).
+
+## 8. Security Considerations
 
 * **Side-Channel Vulnerability:** Like all behavioral biometric systems, implementations are potentially vulnerable to side-channel attacks inferring timing information (e.g., via CPU monitoring, network traffic analysis, acoustic analysis). Mitigation strategies (e.g., execution in isolated environments like Web Workers, introduction of timing noise) are recommended but may not provide complete protection against sophisticated adversaries.
 * **Replay Attacks:** Capture and replay of the exact `TypingPattern` data, including precise timing, can bypass authentication. The complexity introduced by Katas and Context-Specific Sequences increases the difficulty of successful capture and replay. Mitigation involves protecting the environment where data is captured and processed (e.g., Web Workers) and avoiding exposure of raw pattern data.
@@ -165,15 +216,15 @@ This technique allows for granular authorization within an application by requir
 * **Fallback Mechanism:** Implementations MUST provide a secure and reliable alternative authentication mechanism for users who cannot successfully authenticate using MessyKey (due to pattern inconsistency, injury, etc.).
 * **Biometric Data Sensitivity:** Although local-first, the `TypingProfile` constitutes sensitive biometric data and must be protected appropriately on the client device against unauthorized access or extraction.
 
-## 8. Error Handling
+## 9. Error Handling
 
 Implementations should employ standard error handling mechanisms suitable for the target platform and language. Errors during processing or verification should be managed appropriately and communicated clearly where necessary.
 
-## 9. Versioning
+## 10. Versioning
 
 This document specifies version 1.0.0 of the MessyKey protocol. Subsequent revisions will adhere to Semantic Versioning (SemVer).
 
-## 10. Reference Implementation
+## 11. Reference Implementation
 
 A reference implementation in JavaScript is provided within the associated project repository (`src/` directory), demonstrating the practical application of this protocol specification.
 ```
