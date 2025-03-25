@@ -13,7 +13,7 @@ MessyKey is an *additional* security layer, **not** a replacement for strong pas
 ## 🌟 Key Features
 
 *   **Local-First:** All data processing and storage happen on the user's device. No data leaves your device.
-*   **Privacy-Respecting:** Only timing metadata and key sequence information are used.  The actual password content is *never* stored or processed by MessyKey.
+*   **Privacy-Respecting:** Only timing metadata and key sequence information are used.  The actual *password content is *never* stored or processed by MessyKey*. This differentiates messykey from many existing implementations.
 *   **Lightweight:** Minimal computational overhead and code footprint.
 *   **Easy Integration:** Designed for integration into web apps, browser extensions, and other projects.
 *   **Open Standard:** Defined by a clear protocol specification ([PROTOCOL.md](PROTOCOL.md)), encouraging independent implementations.
