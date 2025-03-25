@@ -51,6 +51,54 @@ MessyKey analyzes your unique typing *pattern*:
 
 This creates a unique "typing profile." During login (or other context-specific actions), MessyKey compares your current typing to your stored profile(s). A match (within tolerance) grants access or authorization.
 
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant CA as Client App (Browser JS)
+    participant MK as MessyKey Lib (JS)
+    participant LS as Local Storage (Browser)
+    participant BE as Back-End Server
+
+    %% == Enrollment Flow ==
+    Note over U, LS: Enrollment (Training Phase - Repeat N Times)
+    loop N Training Samples
+        U->>+CA: Type Password/Kata Sample
+        CA->>+MK: Capture Pattern(Events)
+        MK-->>-CA: Raw Pattern Data
+        CA->>MK: messyKey.train()
+        MK-->>CA: Processed Sample (if needed)
+        CA->>CA: Store Sample Temporarily
+        CA->>U: Clear Input / Prompt for Next
+    end
+    Note over CA, MK: After N Samples
+    CA->>+MK: createProfile(Stored Samples)
+    MK-->>-CA: Generated TypingProfile (JSON)
+    CA->>+LS: Store TypingProfile securely
+    LS-->>-CA: Confirm Storage
+    CA->>U: Enrollment Complete
+
+    %% == Verification Flow ==
+    Note over U, BE: Verification Phase (e.g., Login)
+    U->>+CA: Type Password/Kata
+    CA->>+MK: Capture Pattern(Events)
+    MK-->>-CA: Candidate TypingPattern
+    CA->>+LS: Retrieve TypingProfile
+    LS-->>-CA: Stored TypingProfile
+    CA->>+MK: verify(Stored Profile, Candidate Pattern)
+    MK-->>-CA: VerificationResult { match: Boolean }
+    alt Verification Success (result.match is true)
+        CA->>+BE: POST /login { creds, messyKeyVerified: true }
+        Note right of CA: Only result flag sent, NO biometric data!
+        BE->>BE: Verify creds + Check messyKeyVerified flag
+        BE-->>-CA: Auth Success Response
+        CA->>U: Logged In / Action Authorized
+    else Verification Failure (result.match is false)
+        CA->>CA: Handle Local Failure
+        CA->>U: Show Error (e.g., "Login Failed")
+        Note right of CA: Optionally, could inform BE of failure: <br/> POST /login { creds, messyKeyVerified: false } <br/> BE would reject based on flag.
+    end
+```
+
 ## 📦 Getting Started (JavaScript Example)
 
 This repository includes a reference implementation in JavaScript.
