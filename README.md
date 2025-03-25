@@ -1,97 +1,111 @@
+# 🔐 MessyKey: Behavioral Biometric Authentication
 
-# 🔐 MessyKey — Human Rhythm as Security
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-MessyKey adds a new layer of password security by checking **how** you type, not just **what** you type.
+**MessyKey is a *protocol and reference implementation* for adding a lightweight layer of behavioral biometric authentication based on typing dynamics.** It's designed to be local-first, privacy-respecting, and easy to integrate into various applications.
 
-It uses **keystroke dynamics** — the natural timing, rhythm, and even intentional mistakes in your typing — to create a behavioral signature that’s uniquely yours. Even if someone knows your password, they probably won't type it the way you do.
+**Think of it as a *user-defined* 2FA, based on *how* you type, not just *what* you type.**
 
-> 🧠 It's like a secret handshake for your fingers.
+## ⚠️ Important Note
 
----
+MessyKey is intended as an *additional* security layer, **not** a replacement for strong passwords.  It is vulnerable to sophisticated side-channel attacks (see the [Security Considerations](#security-considerations) section). Use it to enhance security, but always in conjunction with other robust security practices.
 
-## 🧠 Why It Works
+## 🌟 Key Features
 
-Most attacks (credential stuffing, phishing, password leaks) rely on getting access to the password.
+*   **Local-First:** All data processing and storage happen on the user's device. No data is sent to external servers.
+*   **Privacy-Respecting:** Only timing metadata is used; the actual password content is never stored or processed by MessyKey.
+*   **Lightweight:** Minimal computational overhead and code footprint.
+*   **Easy Integration:** Designed for easy integration into web applications, browser extensions, and other projects.
+*   **Open Standard:** Defined by a clear protocol specification, encouraging independent implementations.
+* **Key Up and Key Down Events:** Captures timing for both key press and release.
 
-But MessyKey does something different:
+## 🚀 How it Works (Simplified)
 
-- ✅ It expects your *normal messiness* — delays, backspaces, rhythm
-- ✅ It tracks your unique *flow pattern* when typing
-- ✅ It works entirely **on the client side**, with no data ever leaving the browser
+MessyKey analyzes the rhythm and timing of your keystrokes when you type your password.  It records:
 
-So even if your password is stolen, bots or attackers will likely **fail** the rhythm check.
+*   Which keys you press.
+*   The time *between* key presses (`keydown` events).
+*   The time a key is *held down* (`keydown` to `keyup`).
+*   The time between releasing one key and pressing the next (`keyup` to `keydown`)
 
----
+This information is used to create a unique "typing profile."  When you try to log in, MessyKey compares your current typing pattern to your stored profile.  If the patterns match (within a configurable tolerance), access is granted.
 
-## 🆚 Compared to Other Behavioral Auth Systems
+## 📦 Getting Started (JavaScript Example)
 
-| Feature / Benefit             | **MessyKey**                            | **TypingDNA** / **BioCatch**     |
-|------------------------------|-----------------------------------------|----------------------------------|
-| **Open-source**              | ✅ Yes – fully transparent               | ❌ Closed-source (proprietary)   |
-| **Local-only / No backend**  | ✅ No data sent anywhere                 | ❌ Cloud-based (data leaves device) |
-| **Lightweight / Tiny**       | ✅ <5KB, no install required             | ❌ Heavier SDKs + integrations   |
-| **Free to use**              | ✅ 100% free (MIT license)               | ❌ Paid API after free tier      |
-| **Personal / DIY friendly**  | ✅ Devs can drop it into projects        | ❌ Enterprise-first              |
-| **Intentional Messiness**    | ✅ Embraces human “error” as feature     | ❌ Aims for “perfect” typing match |
-| **Offline mode**             | ✅ Works in browser with no server       | ❌ Requires online API call      |
-| **Training flexibility**     | ✅ One-shot or multi-shot training       | ⚠️ Requires multiple samples     |
+This repository includes a reference implementation in JavaScript.
 
-MessyKey is built for **makers, hackers, learners, and indie devs** who want a smarter layer of security *without the weight of enterprise systems*.
+1.  **Include `messykey.js`:**
 
----
+    ```html
+    <script type="module" src="src/messykey.js"></script>
+    ```
 
-## 🚀 How to Use It
+2.  **Use the `useMessyKey` hook:**
 
-1. Clone or download the repo  
-2. Open `index.html` in your browser  
-3. Type a password (e.g., `pwd123`) in your natural rhythm  
-4. Click **Train**  
-5. Type it again the same way → click **Verify**
+    ```javascript
+    import { useMessyKey } from './messykey.js';
 
-Want to integrate it in your own form? It’s just a few lines:
+    const passwordInput = document.getElementById('password');
+    const messyKey = useMessyKey(passwordInput);
 
-```html
-<script type="module">
-  import { useMessyKey } from './messykey.js';
+    // Train the model (multiple times!)
+    let typingProfiles = [];
+    trainButton.onclick = () => {
+        typingProfiles.push(messyKey.train());
+        messyKey.reset();
+        if(typingProfiles.length >= 5) { // Example: Train 5 times
+            // Create the averaged profile
+            myTrainedProfile = messyKey.createProfile(typingProfiles);
+          console.log("Profile trained:", myTrainedProfile);
+        }
+    };
 
-  const input = document.getElementById('password');
-  const mk = useMessyKey(input);
+    // Verify a typing pattern
+    verifyButton.onclick = () => {
+      const currentPattern = messyKey.getPattern();
+      const result = messyKey.verify(myTrainedProfile, currentPattern);
 
-  let pattern;
+      if (result.match) {
+        console.log('Access granted!', result);
+      } else {
+        console.log('Access denied.', result);
+      }
+      messyKey.reset();
+    };
+      resetBtn.onclick = () => {
+          typingProfiles = [];
+        trainedPattern = null;
+        mk.reset();
+        input.value = '';
+        status.textContent = '🔄 Pattern reset. Ready to train again.';
+        output.textContent = '[pattern will appear here]';
+        rhythm.innerHTML = '[live rhythm will show here]';
+      };
+    ```
 
-  trainBtn.onclick = () => {
-    pattern = mk.train();
-    mk.reset();
-  };
+    See the `demo/index.html` file for a complete working example, including visualization of the typing rhythm.
 
-  verifyBtn.onclick = () => {
-    const result = mk.verify(pattern);
-    alert(result ? '✅ Access Granted' : '❌ Access Denied');
-    mk.reset();
-  };
-</script>
-```
+## 📖 Protocol Specification
 
----
+For a detailed description of the MessyKey protocol, including data structures, operations, and security considerations, see the [PROTOCOL.md](PROTOCOL.md) file.
 
-## 🤝 Help Us Make MessyKey Better
+## 🛡️ Security Considerations
 
-MessyKey is just the start — a tiny open project with a big idea.
+*   **Side-Channel Attacks:** MessyKey is vulnerable to side-channel attacks, where an attacker might try to infer timing information through observation (e.g., monitoring network traffic, analyzing CPU usage, or even listening to the sound of keystrokes).  While complete protection is difficult in a browser environment, we recommend running the core MessyKey logic in a **Web Worker** to improve isolation.
+*   **Replay Attacks:**  If an attacker captures the raw timing data, they could replay it to bypass authentication.  Mitigation strategies include using Web Workers and avoiding exposing the raw timing data to potentially malicious scripts.
+*   **Not a Password Replacement:** MessyKey is *not* a replacement for strong, unique passwords. It should be used as an additional layer of security.
+*   **User Consistency:**  The effectiveness of MessyKey depends on the user having a reasonably consistent typing rhythm. Factors like different keyboards, fatigue, or stress can affect typing patterns.
+* **Fallback Mechanism**: Always have a fallback if verification fails.
 
-Ideas we're exploring:
-- Multi-attempt training (average across tries)
-- Visualizations of typing rhythm
-- Tolerance controls
-- Device-based fingerprinting for extra layers
-- Accessibility modes (neurodivergent-friendly!)
+## 🤝 Contributing
 
-If you’re a dev, designer, or security geek who wants to make password UX more human and personal — we’d love your help.
+We welcome contributions to MessyKey!  If you'd like to contribute, please:
 
-Pull requests, issues, ideas, weird experiments — all welcome.
+1.  Fork the repository.
+2.  Create a new branch for your feature or bug fix.
+3.  Make your changes and commit them with clear, descriptive messages.
+4.  Submit a pull request.
 
----
+## 📝 License
 
-## 📄 License
-
-MIT — open to remix, reuse, and reimagine. Just don't make it evil.
- 
+MessyKey is released under the [MIT License](LICENSE).
