@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MessyKey Demo</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      max-width: 700px;
+      margin: auto;
+      background: #f9f9f9;
+    }
+    h1 { font-size: 2rem; }
+    input {
+      font-size: 1.2rem;
+      padding: 0.6rem;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    button {
+      padding: 0.6rem 1.2rem;
+      margin-right: 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    #status {
+      margin-top: 1rem;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    .instructions {
+      background: #fff;
+      border-left: 4px solid #007acc;
+      padding: 1rem;
+      margin: 1rem 0;
+      line-height: 1.6;
+    }
+    pre {
+      background: #efefef;
+      padding: 1rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+    .chart {
+      font-family: monospace;
+      background: #fff;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔐 MessyKey: Behavioral Password Auth Demo </h1>
+
+  <p class="instructions">
+    <strong>💡 Try this example:</strong><br>
+    1. Type <code>pwe</code>, then press <kbd>Backspace</kbd>, then type <code>d123</code><br>
+    2. Click <strong>Train</strong><br>
+    3. Retype it again <em>exactly the same way</em> and click <strong>Verify</strong><br>
+    4. Try typing it differently — it should fail.<br><br>
+    We record:
+    <ul>
+      <li>⏱️ Time between key presses</li>
+      <li>⌫ Mistakes and corrections</li>
+      <li>🎵 Your typing rhythm</li>
+    </ul>
+  </p>
+
+  <input type="password" id="passwordInput" placeholder="Type your password here" />
+  <br>
+  <button id="trainBtn">✅ Train</button>
+  <button id="verifyBtn">🔍 Verify</button>
+  <button id="resetBtn">🔄 Reset</button>
+
+  <div id="status">🔄 Waiting for input...</div>
+
+  <h3>🧬 Pattern Details</h3>
+  <pre id="patternOut">[pattern will appear here]</pre>
+
+  <h3>🎹 Typing Rhythm (ms)</h3>
+  <div class="chart" id="rhythmChart">[live rhythm will show here]</div>
+
+  <script type="module">
+    import { useMessyKey } from '../src/messykey.js';
+
+    const input = document.getElementById('passwordInput');
+    const status = document.getElementById('status');
+    const output = document.getElementById('patternOut');
+    const rhythm = document.getElementById('rhythmChart');
+    const trainBtn = document.getElementById('trainBtn');
+    const verifyBtn = document.getElementById('verifyBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    const mk = useMessyKey(input);
+    let trainedPattern = null;
+
+    input.addEventListener('input', () => {
+      const pattern = mk.getPattern();
+      rhythm.innerHTML = renderChart(pattern);
+    });
+
+    trainBtn.onclick = () => {
+      trainedPattern = mk.train();
+      mk.reset();
+      status.textContent = '✅ Pattern trained! Now type it again and click Verify.';
+      output.textContent = JSON.stringify(trainedPattern, null, 2);
+      input.value = '';
+      rhythm.innerHTML = '[live rhythm will show here]';
+    };
+
+    verifyBtn.onclick = () => {
+      if (!trainedPattern) {
+        status.textContent = '⚠️ Please train a pattern first.';
+        return;
+      }
+
+      const current = mk.getPattern();
+      const tolerance = 400;
+
+      if (current.length !== trainedPattern.length) {
+        status.textContent = `❌ Length mismatch: expected ${trainedPattern.length} keys, got ${current.length}`;
+        showMismatchDetails(trainedPattern, current, tolerance);
+        mk.reset();
+        input.value = '';
+        return;
+      }
+
+      const reasons = [];
+      let match = true;
+
+      current.forEach((entry, i) => {
+        const expected = trainedPattern[i];
+        if (entry.key !== expected.key) {
+          reasons.push(`Key ${i + 1}: expected '${expected.key}', got '${entry.key}'`);
+          match = false;
+        }
+        const delta = Math.abs(entry.timeDiff - expected.timeDiff);
+        if (delta > tolerance) {
+          reasons.push(`Key ${i + 1} (${entry.key}): timing off by ${delta}ms`);
+          match = false;
+        }
+      });
+
+      status.textContent = match
+        ? '✅ Match! Access granted.'
+        : '❌ No match. See mismatch details below.';
+
+      output.textContent =
+        '--- Trained Pattern ---\n' +
+        JSON.stringify(trainedPattern, null, 2) +
+        '\n\n--- Current Attempt ---\n' +
+        JSON.stringify(current, null, 2) +
+        (reasons.length ? '\n\n--- Mismatch Reasons ---\n- ' + reasons.join('\n- ') : '');
+
+      rhythm.innerHTML = renderChart(current);
+      mk.reset();
+      input.value = '';
+    };
+
+    resetBtn.onclick = () => {
+      trainedPattern = null;
+      mk.reset();
+      input.value = '';
+      status.textContent = '🔄 Pattern reset. Ready to train again.';
+      output.textContent = '[pattern will appear here]';
+      rhythm.innerHTML = '[live rhythm will show here]';
+    };
+
+    function renderChart(pattern) {
+      return pattern.map(p => `${p.key} | ${'█'.repeat(Math.max(p.timeDiff / 40, 1))} ${p.timeDiff}ms`).join('<br>');
+    }
+  </script>
+</body>
+</html>
