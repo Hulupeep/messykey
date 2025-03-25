@@ -17,7 +17,7 @@ MessyKey is an *additional* security layer, **not** a replacement for strong pas
 * **Privacy-Respecting:** Only timing metadata and key sequence information are used. The actual password content is *never* stored or processed by MessyKey.
 * **Lightweight:** Minimal computational overhead and code footprint.
 * **Easy Integration:** Designed for integration into web apps, browser extensions, and other projects.
-* **Open Standard:** Defined by a clear protocol specification ([PROTOCOL.md](PROTOCOL.md)), encouraging independent implementations.
+* **Open Standard:** Defined by a clear protocol specification ([protocol.md](protocol.md)), encouraging independent implementations.
 * **Key Up and Key Down Events:** Captures timing for both key press and release.
 * **Sequence-Aware:** Captures the *exact* sequence of keystrokes, including backspaces, corrections, and hesitations. "pwe<Backspace>d123" is different from "pwd123".
 
