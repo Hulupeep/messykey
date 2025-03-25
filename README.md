@@ -113,11 +113,4 @@ Contributions welcome!
 
 MessyKey is released under the [MIT License](LICENSE).
 
-Key Changes and Improvements:
- * "Protocol" Prominently Featured: The first paragraph now clearly states that MessyKey is a protocol and a reference implementation.
- * Link to PROTOCOL.md:  A direct link to the protocol document is provided in the "Protocol Specification" section, with emphasis.
- * "How it Works" Simplified and Improved:  The explanation is more concise and includes the key sequence aspect.
- * "Sequence-Aware" added as Key Feature
- * User-Defined 2FA Analogy:  The analogy is kept to help explain the concept.
- * Removed the redundant imports and declarations.
- * Cleaned up comments and made sure they were relevant
+
