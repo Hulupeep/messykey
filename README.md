@@ -114,8 +114,10 @@ sequenceDiagram
  * Self-Securing Local Vaults (BKD): Protect password managers or sensitive notes. The vault data remains encrypted unless you type the passphrase correctly – the key isn't stored separately.
  * More Accurate & Private Logins (Enhanced Analysis + Local-First): Improve standard login security significantly by analyzing detailed typing habits privately on the user's device.
  * Contextual Step-Up Authentication (Dynamic Katas): Require stronger verification for sensitive actions within an already logged-in session, seamlessly.
-📦 Getting Started (JavaScript Example - v2.0 Ready)
+## Getting Started 
 (This example assumes a library implementing v2.0 features)
+
+```Javascriot
 import { useMessyKey } from './messykey.js'; // Assuming messykey.js implements v2.0
 
 const passwordInput = document.getElementById('password');
@@ -201,20 +203,26 @@ verifyButton.onclick = async () => { // Verification might be async for BKD
 };
 
 // --- Reset --- (Similar logic for clearing state)
+```
 
 (See demo/ for potential examples)
-📖 Protocol Specification v2.0.0
+
+##Protocol Specification v2.0.0
 MessyKey is fundamentally defined by its open protocol. For the definitive technical details on data structures, operations, profile formats, BKD requirements, dynamic challenges, and more, please see the PROTOCOL.md (v2.0.0) file.
-🛡️ Security Considerations (v2.0 Highlights)
+# security Considerations (v2.0 Highlights)
  * Side-Channel Attacks: Remain a concern for all behavioral biometrics. Complex operations (BKD, deep analysis) might offer new vectors. Use Web Workers for isolation; consider noise injection.
  * Replay Attacks: Significantly mitigated by Dynamic Challenge-Response Katas. Basic replay is still a threat if raw pattern data is exposed without challenges.
  * BKD Security: Relies heavily on the chosen cryptographic primitives (KDF/Fuzzy Extractor, encryption). Requires careful implementation and sufficient entropy in typing patterns. Helper data must not leak key info.
  * Profile Security: BKD provides strong protection for the stored template. Non-BKD profiles need robust protection via standard browser storage security.
  * Supplemental Factor: Always use MessyKey alongside strong primary credentials.
  * User Variability & Fallback: Effectiveness depends on user consistency. A secure fallback mechanism is mandatory.
-🤝 Contributing
+
+
+## Contributing
 Contributions to the protocol specification or reference implementation are welcome! Please follow standard Fork/Branch/PR procedures.
 (To understand more about why I created this protocol, see about.md)
-📝 License
+
+
+##License
 MessyKey is released under the MIT License.
 
