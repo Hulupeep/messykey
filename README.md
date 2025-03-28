@@ -43,7 +43,7 @@ MessyKey analyzes your unique typing "signature" by capturing:
 * **Which keys you press:** Including letters, numbers, symbols, Backspace, Shift, Enter, etc.
 * **The exact sequence:** Including errors and corrections (`paswword` is distinct from `password`).
 * **Detailed Timing:** Key press (`keydown`), key hold (`keyup`), time between keys.
-* **(v2.0) Deeper Patterns:** Characteristic errors, correction methods, pauses, and overall flow.
+* **Deeper Patterns:** Characteristic errors, correction methods, pauses, and overall flow.
 
 This multi-dimensional data creates a detailed `TypingProfile`. During authentication:
 
