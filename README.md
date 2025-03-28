@@ -16,27 +16,27 @@ MessyKey is designed as an *additional* security layer to enhance existing authe
 MessyKey v2.0 isn't just another typing biometric system. Its novelty lies in the synergistic combination of several forward-thinking principles, defined by an open protocol:
 
 **1. Radically Local-First & Private Architecture:**
-   * **The Breakthrough:** Unlike many commercial biometric solutions that send your sensitive data (even derived or anonymized) to the cloud, MessyKey performs **all processing, analysis, and profile storage directly on the user's device.** *No biometric data ever leaves.*
+   * **what's different:** Unlike many commercial biometric solutions that send your sensitive data (even derived or anonymized) to the cloud, MessyKey performs **all processing, analysis, and profile storage directly on the user's device.** *No biometric data ever leaves.*
    * **Why it Matters:** This fundamentally enhances user privacy, eliminates the risk of server-side biometric data breaches, and gives users control over their own sensitive information. It's security that respects user sovereignty.
 
 **2. Deep Behavioral Analysis: Beyond Simple Timing:**
-   * **The Breakthrough:** MessyKey v2.0 goes far beyond just measuring the time between correct key presses. It meticulously analyzes the **entire, ordered sequence** of `keydown` and `keyup` events, explicitly incorporating:
+   * **what's different?:** MessyKey v2.0 goes far beyond just measuring the time between correct key presses. It meticulously analyzes the **entire, ordered sequence** of `keydown` and `keyup` events, explicitly incorporating:
       * **Error Patterns:** *How* you make mistakes (e.g., transpositions, adjacent keys).
       * **Correction Strategies:** *How* you fix mistakes (e.g., rapid backspacing, precise deletes).
       * **Micro-Hesitations & Flow:** Your characteristic pauses, bursts, and overall typing rhythm.
    * **Why it Matters:** This "Messiness is a Feature" approach creates a much richer, more unique, and harder-to-mimic biometric profile than methods focusing only on perfect typing. It understands your *actual* typing habits.
 
 **3. Active Security via Dynamic Challenge-Response Katas:**
-   * **The Breakthrough:** MessyKey v2.0 introduces **Dynamic Katas**. Instead of just verifying a static complex typing pattern (a Kata), the system can issue a unique, session-specific `Challenge` (e.g., a prefix code). The user must then execute their Kata *adapted* to this challenge.
+   * **What's different:** MessyKey v2.0 introduces **Dynamic Katas**. Instead of just verifying a static complex typing pattern (a Kata), the system can issue a unique, session-specific `Challenge` (e.g., a prefix code). The user must then execute their Kata *adapted* to this challenge.
    * **Why it Matters:** This turns passive verification into an *active* security measure. It renders simple replay attacks (using recorded typing) useless, as the challenge changes each time. It provides integrated, high-security verification comparable to MFA, but built seamlessly into the typing flow. Think of it like a secret handshake where a unique code word is added each time.
 
 **4. Optional Self-Securing Profiles via BKD:**
-   * **The Breakthrough:** The v2.0 protocol specifies support for **Biometric Key Derivation (BKD)**. This cutting-edge technique allows the user's unique typing pattern itself to generate the cryptographic key needed to encrypt their stored biometric profile.
+   * **What's different** The v2.0 protocol specifies support for **Biometric Key Derivation (BKD)**. This cutting-edge technique allows the user's unique typing pattern itself to generate the cryptographic key needed to encrypt their stored biometric profile.
    * **Why it Matters:** The encryption key doesn't exist until the user types correctly. This means even if an attacker steals the stored profile file from the device, it remains encrypted and useless without the user's live, correctly-timed input. It dramatically enhances the security of the biometric template at rest.
 
 **In combination, these features, defined by an open protocol, represent a significant leap forward in creating powerful, user-centric, and privacy-respecting authentication.**
 
-## 💡 How It Works (v2.0 Enhanced)
+## 💡 How It Works
 
 MessyKey analyzes your unique typing "signature" by capturing:
 
