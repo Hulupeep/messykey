@@ -1,4 +1,4 @@
-# 🔐 MessyKey v2.0: Typing Biometrics Reimagined - Local, Dynamic, and Error-Aware
+# 🔐 MessyKey : Typing Biometrics Reimagined - Local, Dynamic, and Error-Aware
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Protocol Version: 2.0.0](https://img.shields.io/badge/Protocol-v2.0.0-blue.svg)](protocol.md)
