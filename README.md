@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Protocol Version: 2.0.0](https://img.shields.io/badge/Protocol-v2.0.0-blue.svg)](protocol.md)
 
-**MessyKey is an open *protocol* (v2.0.0) and reference implementation for innovative behavioral biometric authentication based on *how* you type.** It moves beyond simple password checks or basic timing analysis, creating a powerful, privacy-preserving security layer directly on the user's device.
+**MessyKey is an open *protocol* (v2.0.0) and reference implementation for an innovative behavioral biometric authentication based on *how* you type.** It moves beyond simple password checks or basic timing analysis, creating a powerful, privacy-preserving security layer directly on the user's device.
 
 **Think of it as a dynamic, self-securing "typing signature" that understands your unique rhythm, your common mistakes, and can even respond to active challenges.**
 
