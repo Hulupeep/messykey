@@ -37,7 +37,7 @@ MessyKey v2.0 isn't just another typing biometric system. Its novelty lies in th
 
 **In combination, these features, defined by an open protocol, represent a significant leap forward in creating powerful, user-centric, and privacy-respecting authentication.**
 
-## 💡 How It Works (v2.0 Enhanced)
+## 💡 How It Works 
 
 MessyKey analyzes your unique typing "signature" by capturing:
 
