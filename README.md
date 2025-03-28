@@ -11,7 +11,7 @@
 
 MessyKey is designed as an *additional* security layer to enhance existing authentication, **not** as a standalone replacement for strong primary credentials (like passwords or hardware keys). It is still vulnerable to sophisticated side-channel attacks. Always use robust, layered security practices.
 
-## ✨ Why MessyKey v2.0 is a True Innovation
+## ✨ Whats makes it different?
 
 MessyKey v2.0 isn't just another typing biometric system. Its novelty lies in the synergistic combination of several forward-thinking principles, defined by an open protocol:
 
