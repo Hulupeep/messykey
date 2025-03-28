@@ -107,6 +107,7 @@ sequenceDiagram
         CA->>CA: Handle Local Failure
         CA->>U: Show Error (e.g., "Authorization Failed")
     end
+```
 
 🚀 Use Cases Enabled by v2.0 Innovations
  * Highly Secure Transactions (Dynamic Katas): Authorize bank transfers or crypto payments by typing a unique code + your Kata. Replay-proof MFA integrated into typing.
