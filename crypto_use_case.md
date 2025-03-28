@@ -121,18 +121,22 @@ sequenceDiagram
 ```
 
 Explanation: The diagram shows the user typing, the wallet capturing it, MessyKey performing verification against the stored profile (including potential BKD decryption), and unlocking the key store only upon a successful behavioral match.
-7. Other Potential Use Cases
+
+
+## 7. Other Potential Use Cases
  * Password Manager Vaults: Secure local password databases with typing behavior + master password.
  * High-Privilege Operations ("Keystroke Sudo"): Require a Dynamic Kata for critical admin commands in enterprise or development environments.
  * Securing Seed Phrase Recovery: Potentially apply behavioral checks during the highly sensitive process of entering a seed phrase (requires very careful implementation to avoid locking users out).
  * Offline / Edge Devices: Provide local biometric verification where network connectivity is unavailable.
 
 
-8. Where It Doesn't Work (or Has Gaps)
+## 8. Where It Doesn't Work (or Has Gaps)
  * Device-Level Malware: Advanced keyloggers, screen scrapers, or rootkits running on the user's machine can potentially intercept or manipulate typing events before MessyKey sees them. MessyKey raises the bar significantly but cannot fully defeat a totally compromised OS.
  * Physical Coercion / High-Fidelity Observation: If an attacker forces the user to type or uses extremely high-fidelity recording (e.g., specialized cameras + acoustic analysis), replication might be possible, though difficult. Dynamic Challenges provide strong mitigation here.
  * User Variability / Different Keyboards: Significant changes in typing style (injury, stress) or using a drastically different keyboard can lead to false rejections (FRR). Robust fallback mechanisms and potential re-enrollment flows are essential. BKD implementations must carefully consider tolerance.
-9. Get Started with MessyKey in Your Crypto Project
+
+
+## 9 Get Started with MessyKey in Your Crypto Project
  * Explore the Repo: Clone or download this repository.
  * Read the Protocol: Understand the data structures (TypingProfile, Challenge, etc.) and operations (train, verify) in the MessyKey Protocol Specification (v2.0.0).
  * Integrate: Use the reference implementation (or build your own based on the protocol):
